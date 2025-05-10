@@ -1,0 +1,27 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8777/eureka
+
+server:
+  port: 8444
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5332/flightsdb
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+
+#set your own 256-bit secret key
+api:
+  secretkey:
+  price:
+    business: 1.4
+    firstClass: 1.8

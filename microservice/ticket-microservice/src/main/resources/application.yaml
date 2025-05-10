@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: ticket-microservice
+  config:
+    import: optional:configserver:http://localhost:8999

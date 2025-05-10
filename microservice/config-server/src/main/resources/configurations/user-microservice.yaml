@@ -1,0 +1,28 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8777/eureka
+
+server:
+  port: 8555
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5332/usersdb
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+
+#Duration of the access token in milliseconds
+expire:
+  jw-token: 3600000
+
+#set your own 256-bit secret key
+api:
+  secretkey:

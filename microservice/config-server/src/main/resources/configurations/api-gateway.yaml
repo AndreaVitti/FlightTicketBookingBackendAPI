@@ -1,0 +1,48 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8777/eureka
+
+server:
+  port: 8666
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: user-microservice
+          uri: lb:http://USER-MICROSERVICE
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - JwtAuthFilter
+        - id: flight-microservice
+          uri: lb:http://FLIGHT-MICROSERVICE
+          predicates:
+            - Path=/api/v1/flights/**
+          filters:
+            - JwtAuthFilter
+        - id: ticket-microservice
+          uri: lb:http://TICKET-MICROSERVICE
+          predicates:
+            - Path=/api/v1/tickets/**
+          filters:
+            - JwtAuthFilter
+        - id: payment-microservice
+          uri: lb:http://PAYMENT-MICROSERVICE
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - JwtAuthFilter
+        - id: auth-microservice
+          uri: lb:http://USER-MICROSERVICE
+          predicates:
+            - Path=/api/v1/auth/register, /api/v1/auth/login
+
+api:
+  secretkey:
