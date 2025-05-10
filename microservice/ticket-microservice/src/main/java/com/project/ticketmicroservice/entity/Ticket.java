@@ -1,6 +1,5 @@
 package com.project.ticketmicroservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.ticketmicroservice.type.SeatClass;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

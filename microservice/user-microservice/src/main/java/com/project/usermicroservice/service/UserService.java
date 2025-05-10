@@ -7,7 +7,6 @@ import com.project.usermicroservice.mapper.MapperUtils;
 import com.project.usermicroservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

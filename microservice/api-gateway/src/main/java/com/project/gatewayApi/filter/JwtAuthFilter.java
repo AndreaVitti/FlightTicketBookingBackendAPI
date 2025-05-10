@@ -21,7 +21,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
     private JWTService jwtService;
 
     @Autowired
-    public JwtAuthFilter(){
+    public JwtAuthFilter() {
         super(Config.class);
     }
 

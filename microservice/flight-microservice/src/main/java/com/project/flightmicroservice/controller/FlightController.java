@@ -1,8 +1,8 @@
 package com.project.flightmicroservice.controller;
 
+import com.project.flightmicroservice.DTO.BookingRequest;
 import com.project.flightmicroservice.DTO.BookingResponse;
 import com.project.flightmicroservice.DTO.CreateFlightRequest;
-import com.project.flightmicroservice.DTO.BookingRequest;
 import com.project.flightmicroservice.DTO.Response;
 import com.project.flightmicroservice.service.FlightService;
 import com.project.flightmicroservice.type.SeatClass;
@@ -43,7 +43,7 @@ public class FlightController {
                                                         @RequestParam LocalDate departureDate,
                                                         @RequestParam int numPeople,
                                                         @RequestParam SeatClass seatClass) {
-        Response response = flightService.getAvailableFlights(startLoc,destination,departureDate,numPeople,seatClass);
+        Response response = flightService.getAvailableFlights(startLoc, destination, departureDate, numPeople, seatClass);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 

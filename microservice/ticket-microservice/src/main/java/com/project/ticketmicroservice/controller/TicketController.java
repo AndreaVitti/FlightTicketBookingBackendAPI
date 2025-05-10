@@ -39,7 +39,7 @@ public class TicketController {
 
     @GetMapping("/allByUserId/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> getAllByUserId(@PathVariable("userId")Long userId) {
+    public ResponseEntity<Response> getAllByUserId(@PathVariable("userId") Long userId) {
         Response response = ticketService.getAllByUserId(userId);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }

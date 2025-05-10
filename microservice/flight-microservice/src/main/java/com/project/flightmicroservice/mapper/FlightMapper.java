@@ -36,7 +36,7 @@ public class FlightMapper {
         return availFlightResponse;
     }
 
-    public BookingResponse mapFlightToBookingResponse(Flight flight, BigDecimal ticketPrice){
+    public BookingResponse mapFlightToBookingResponse(Flight flight, BigDecimal ticketPrice) {
         BookingResponse bookingResponse = new BookingResponse();
         bookingResponse.setId(flight.getId());
         bookingResponse.setStartLoc(flight.getStartLoc());

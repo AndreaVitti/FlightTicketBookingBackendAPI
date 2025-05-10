@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class UserNotFoundHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Response> handlerUsername(UsernameNotFoundException e){
+    public ResponseEntity<Response> handlerUsername(UsernameNotFoundException e) {
         Response response = new Response();
         response.setHttpCode(404);
         response.setMessage(e.getMessage());
@@ -18,7 +18,7 @@ public class UserNotFoundHandler {
     }
 
     @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<Response> handlerUser(UserNotFound e){
+    public ResponseEntity<Response> handlerUser(UserNotFound e) {
         Response response = new Response();
         response.setHttpCode(404);
         response.setMessage(e.getMessage());

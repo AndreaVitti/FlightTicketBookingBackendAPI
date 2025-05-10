@@ -49,7 +49,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails, Long userId) {
         Map<String, String> extraClaims = new HashMap<>();
         String authString = userDetails.getAuthorities().toString();
-        extraClaims.put("Roles",  authString.substring(1, authString.length() - 1));
+        extraClaims.put("Roles", authString.substring(1, authString.length() - 1));
         extraClaims.put("UserId", userId.toString());
         return generateToken(extraClaims, userDetails, jwtTokenExpire);
     }

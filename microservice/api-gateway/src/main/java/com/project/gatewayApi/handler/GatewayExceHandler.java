@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GatewayExceHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(HeaderNotValid.class)
-    public ResponseEntity<Response> headerHandler(HeaderNotValid e){
+    public ResponseEntity<Response> headerHandler(HeaderNotValid e) {
         Response response = new Response();
         response.setHttpCode(400);
         response.setMessage(e.getMessage());
@@ -16,7 +16,7 @@ public class GatewayExceHandler {
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(NotAuthorize.class)
-    public ResponseEntity<Response> authHandler(NotAuthorize e){
+    public ResponseEntity<Response> authHandler(NotAuthorize e) {
         Response response = new Response();
         response.setHttpCode(400);
         response.setMessage(e.getMessage());

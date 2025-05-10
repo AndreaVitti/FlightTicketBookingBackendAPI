@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
-    Optional<Ticket> findByConfirmCode (String confirmCode);
-   List<Ticket> findByUserId (Long userId);
+    Optional<Ticket> findByConfirmCode(String confirmCode);
+
+    List<Ticket> findByUserId(Long userId);
 }

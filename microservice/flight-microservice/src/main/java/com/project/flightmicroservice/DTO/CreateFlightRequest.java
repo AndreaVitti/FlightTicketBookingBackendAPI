@@ -21,12 +21,12 @@ public class CreateFlightRequest {
     @NotBlank(message = "Arrival time required")
     @Future(message = "Arrival time not valid")
     private LocalDateTime arrivalTime;
-    @Min(value = 1,message = "At least one seat")
+    @Min(value = 1, message = "At least one seat")
     private Integer economySeats;
-    @Min(value = 1,message = "At least one seat")
+    @Min(value = 1, message = "At least one seat")
     private Integer businessSeats;
-    @Min(value = 1,message = "At least one seat")
+    @Min(value = 1, message = "At least one seat")
     private Integer firstClassSeats;
-    @DecimalMin(value = "0.50" , message = "Minimal price is 0.50")
+    @DecimalMin(value = "0.50", message = "Minimal price is 0.50")
     private BigDecimal price;
 }

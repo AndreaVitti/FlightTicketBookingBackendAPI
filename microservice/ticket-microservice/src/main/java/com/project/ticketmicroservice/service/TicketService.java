@@ -134,7 +134,7 @@ public class TicketService {
         return response;
     }
 
-    private void canAccessMultipleResources(Long loggedUserId, List<Ticket> tickets){
+    private void canAccessMultipleResources(Long loggedUserId, List<Ticket> tickets) {
         tickets.forEach(ticket -> canAccessResource(loggedUserId, ticket));
     }
 

@@ -1,8 +1,8 @@
 package com.project.flightmicroservice.service;
 
+import com.project.flightmicroservice.DTO.BookingRequest;
 import com.project.flightmicroservice.DTO.BookingResponse;
 import com.project.flightmicroservice.DTO.CreateFlightRequest;
-import com.project.flightmicroservice.DTO.BookingRequest;
 import com.project.flightmicroservice.DTO.Response;
 import com.project.flightmicroservice.entity.Flight;
 import com.project.flightmicroservice.exceptions.ArrivalTimeInvalid;
