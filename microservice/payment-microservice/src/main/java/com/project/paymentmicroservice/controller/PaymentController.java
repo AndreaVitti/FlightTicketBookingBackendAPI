@@ -3,6 +3,7 @@ package com.project.paymentmicroservice.controller;
 import com.project.paymentmicroservice.DTO.PaymentRequest;
 import com.project.paymentmicroservice.DTO.Response;
 import com.project.paymentmicroservice.service.PaymentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/makePayment")
-    public ResponseEntity<Response> makePayment(@RequestBody PaymentRequest paymentRequest){
+    public ResponseEntity<Response> makePayment(@RequestBody @Valid PaymentRequest paymentRequest){
         Response response = paymentService.makePayment(paymentRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }

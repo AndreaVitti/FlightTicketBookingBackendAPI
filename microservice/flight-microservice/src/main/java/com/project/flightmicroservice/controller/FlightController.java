@@ -3,6 +3,7 @@ package com.project.flightmicroservice.controller;
 import com.project.flightmicroservice.DTO.*;
 import com.project.flightmicroservice.service.FlightService;
 import com.project.flightmicroservice.type.SeatClass;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,14 +22,14 @@ public class FlightController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> createFlight(@RequestBody CreateFlightRequest createFlightRequest) {
+    public ResponseEntity<Response> createFlight(@RequestBody @Valid CreateFlightRequest createFlightRequest) {
         Response response = flightService.createFlight(createFlightRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
     @PostMapping("/book")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<BookingResponse> bookTicket(@RequestBody BookingRequest bookingRequest) {
+    public ResponseEntity<BookingResponse> bookTicket(@RequestBody @Valid BookingRequest bookingRequest) {
         BookingResponse bookingResponse = flightService.bookTicket(bookingRequest);
         return ResponseEntity.status(bookingResponse.getHttpCode()).body(bookingResponse);
     }
@@ -68,7 +69,7 @@ public class FlightController {
 
     @PutMapping("/updateBookedSeat")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> updateBookedSeat(@RequestBody UpdateBookedSeatsReq updateReq) {
+    public ResponseEntity<Response> updateBookedSeat(@RequestBody @Valid UpdateBookedSeatsReq updateReq) {
         Response response = flightService.updateBookedSeat(updateReq);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }

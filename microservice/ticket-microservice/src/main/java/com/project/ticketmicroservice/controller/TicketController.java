@@ -4,6 +4,7 @@ import com.project.ticketmicroservice.DTO.CheckoutRequest;
 import com.project.ticketmicroservice.DTO.Response;
 import com.project.ticketmicroservice.DTO.TicketCreateRequest;
 import com.project.ticketmicroservice.service.TicketService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,7 @@ public class TicketController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> createTicket(@RequestHeader("Authorization") String beaerToken, @RequestBody TicketCreateRequest ticketCreateRequest) {
+    public ResponseEntity<Response> createTicket(@RequestHeader("Authorization") String beaerToken, @RequestBody @Valid TicketCreateRequest ticketCreateRequest) {
         Response response = ticketService.createTicket(beaerToken, ticketCreateRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
@@ -46,7 +47,7 @@ public class TicketController {
 
     @PutMapping("/checkout")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> checkout(@RequestHeader("Authorization") String bearerToken, @RequestBody CheckoutRequest checkoutRequest) {
+    public ResponseEntity<Response> checkout(@RequestHeader("Authorization") String bearerToken, @RequestBody @Valid CheckoutRequest checkoutRequest) {
         Response response = ticketService.checkout(bearerToken, checkoutRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
