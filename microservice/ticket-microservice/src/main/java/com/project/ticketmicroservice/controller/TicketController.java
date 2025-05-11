@@ -1,6 +1,6 @@
 package com.project.ticketmicroservice.controller;
 
-import com.project.ticketmicroservice.DTO.PaymentRequest;
+import com.project.ticketmicroservice.DTO.CheckoutRequest;
 import com.project.ticketmicroservice.DTO.Response;
 import com.project.ticketmicroservice.DTO.TicketCreateRequest;
 import com.project.ticketmicroservice.service.TicketService;
@@ -46,8 +46,15 @@ public class TicketController {
 
     @PutMapping("/checkout")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> checkout(@RequestHeader("Authorization") String bearerToken, @RequestBody PaymentRequest paymentRequest) {
-        Response response = ticketService.checkout(bearerToken, paymentRequest);
+    public ResponseEntity<Response> checkout(@RequestHeader("Authorization") String bearerToken, @RequestBody CheckoutRequest checkoutRequest) {
+        Response response = ticketService.checkout(bearerToken, checkoutRequest);
+        return ResponseEntity.status(response.getHttpCode()).body(response);
+    }
+
+    @DeleteMapping("/delete/{confirmCode}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public ResponseEntity<Response> deleteTicket(@RequestHeader("Authorization") String bearerToken, @PathVariable("confirmCode") String confirmCode) {
+        Response response = ticketService.deleteTicket(bearerToken, confirmCode);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 }

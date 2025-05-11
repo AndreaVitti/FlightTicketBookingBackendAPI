@@ -26,7 +26,7 @@ public class TicketExceHandler {
     }
 
     @ExceptionHandler(TicketNotFound.class)
-    public ResponseEntity<Response> ticketNotFoundHandler(UserNotFound e) {
+    public ResponseEntity<Response> ticketNotFoundHandler(TicketNotFound e) {
         Response response = new Response();
         response.setHttpCode(404);
         response.setMessage(e.getMessage());
@@ -34,7 +34,7 @@ public class TicketExceHandler {
     }
 
     @ExceptionHandler(CantAccessResource.class)
-    public ResponseEntity<Response> cantAccessResourceHandler(UserNotFound e) {
+    public ResponseEntity<Response> cantAccessResourceHandler(CantAccessResource e) {
         Response response = new Response();
         response.setHttpCode(403);
         response.setMessage(e.getMessage());

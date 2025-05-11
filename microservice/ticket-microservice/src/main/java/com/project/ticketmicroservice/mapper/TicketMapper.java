@@ -1,13 +1,11 @@
 package com.project.ticketmicroservice.mapper;
 
-import com.project.ticketmicroservice.DTO.FlightBookRequest;
-import com.project.ticketmicroservice.DTO.InfoPassengerDTO;
-import com.project.ticketmicroservice.DTO.TicketCreateRequest;
-import com.project.ticketmicroservice.DTO.TicketFullInfo;
+import com.project.ticketmicroservice.DTO.*;
 import com.project.ticketmicroservice.entity.InfoPassenger;
 import com.project.ticketmicroservice.entity.Ticket;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -18,6 +16,14 @@ public class TicketMapper {
         flightReq.setNumPeople(createReq.getInfoPassengerDTOList().size());
         flightReq.setSeatClass(createReq.getSeatClass());
         return flightReq;
+    }
+
+    public PaymentRequest mapCheckoutReqToPaymentReq(CheckoutRequest checkoutReq, BigDecimal price){
+        PaymentRequest payReq = new PaymentRequest();
+        payReq.setTicketConfirmCode(checkoutReq.getTicketConfirmCode());
+        payReq.setCurrency(checkoutReq.getCurrency());
+        payReq.setPrice(price);
+        return payReq;
     }
 
     public TicketFullInfo mapTicketToTicketFullInfo(Ticket ticket) {

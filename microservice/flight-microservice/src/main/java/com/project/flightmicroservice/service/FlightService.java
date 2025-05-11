@@ -1,17 +1,19 @@
 package com.project.flightmicroservice.service;
 
-import com.project.flightmicroservice.DTO.BookingRequest;
-import com.project.flightmicroservice.DTO.BookingResponse;
-import com.project.flightmicroservice.DTO.CreateFlightRequest;
-import com.project.flightmicroservice.DTO.Response;
+import com.project.flightmicroservice.DTO.*;
 import com.project.flightmicroservice.entity.Flight;
 import com.project.flightmicroservice.exceptions.ArrivalTimeInvalid;
+import com.project.flightmicroservice.exceptions.CantAccessResource;
 import com.project.flightmicroservice.exceptions.FlightNotFound;
+import com.project.flightmicroservice.exceptions.NotEnoughSeats;
 import com.project.flightmicroservice.mapper.FlightMapper;
 import com.project.flightmicroservice.repository.FlightRepository;
+import com.project.flightmicroservice.type.Role;
 import com.project.flightmicroservice.type.SeatClass;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -139,5 +141,51 @@ public class FlightService {
         response.setHttpCode(200);
         response.setFlightDTO(flightMapper.mapFlightToFlightDTO(flight));
         return response;
+    }
+
+    public Response updateBookedSeat(UpdateBookedSeatsReq updateReq) {
+        Response response = new Response();
+        Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Flight flight = flightRepository.findById(updateReq.getFlightId()).orElseThrow(() -> new FlightNotFound("Flight not found"));
+        canAccessResource(loggedUserId, flight);
+        switch (updateReq.getSeatClass()) {
+            case ECONOMY:
+                if (flight.getEconomySeats() + updateReq.getNumBookedSeats() >= 0) {
+                    flight.setEconomySeats(flight.getEconomySeats() + updateReq.getNumBookedSeats());
+                } else {
+                    throw new NotEnoughSeats("No seats available");
+                }
+                break;
+            case BUSINESS:
+                if (flight.getBusinessSeats() + updateReq.getNumBookedSeats() >= 0) {
+                    flight.setBusinessSeats(flight.getBusinessSeats() + updateReq.getNumBookedSeats());
+                } else {
+                    throw new NotEnoughSeats("No seats available");
+                }
+                break;
+            case FIRST_CLASS:
+                if (flight.getFirstClassSeats() + updateReq.getNumBookedSeats() >= 0) {
+                    flight.setFirstClassSeats(flight.getFirstClassSeats() + updateReq.getNumBookedSeats());
+                } else {
+                    throw new NotEnoughSeats("No seats available");
+                }
+                break;
+        }
+        flightRepository.save(flight);
+        response.setHttpCode(200);
+        return response;
+    }
+
+    private void canAccessResource(Long loggedUserId, Flight flight) {
+        if (SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .noneMatch(authority -> authority
+                        .equals(new SimpleGrantedAuthority(Role.ADMIN.name()))) &&
+                !loggedUserId.equals(flight.getId())) {
+            throw new CantAccessResource("Access to resource denied");
+        }
     }
 }

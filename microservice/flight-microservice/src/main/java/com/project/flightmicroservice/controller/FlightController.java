@@ -1,9 +1,6 @@
 package com.project.flightmicroservice.controller;
 
-import com.project.flightmicroservice.DTO.BookingRequest;
-import com.project.flightmicroservice.DTO.BookingResponse;
-import com.project.flightmicroservice.DTO.CreateFlightRequest;
-import com.project.flightmicroservice.DTO.Response;
+import com.project.flightmicroservice.DTO.*;
 import com.project.flightmicroservice.service.FlightService;
 import com.project.flightmicroservice.type.SeatClass;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +63,13 @@ public class FlightController {
                                                  @RequestParam(required = false) int firstClassSeats,
                                                  @RequestParam(required = false) BigDecimal price) {
         Response response = flightService.updateFlight(id, startLoc, destination, departureTime, arrivalTime, economySeats, businessSeats, firstClassSeats, price);
+        return ResponseEntity.status(response.getHttpCode()).body(response);
+    }
+
+    @PutMapping("/updateBookedSeat")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public ResponseEntity<Response> updateBookedSeat(@RequestBody UpdateBookedSeatsReq updateReq) {
+        Response response = flightService.updateBookedSeat(updateReq);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 }

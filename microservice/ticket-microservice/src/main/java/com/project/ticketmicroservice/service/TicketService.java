@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Service
 @RequiredArgsConstructor
@@ -86,9 +87,7 @@ public class TicketService {
 
     public Response getByConfCode(String confCode) {
         Response response = new Response();
-        Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Ticket ticket = ticketRepository.findByConfirmCode(confCode).orElseThrow(() -> new TicketNotFound("Ticket not found"));
-        canAccessResource(loggedUserId, ticket);
+        Ticket ticket = isTicketValid(confCode);
         response.setHttpCode(200);
         response.setTicketFullInfo(ticketMapper.mapTicketToTicketFullInfo(ticket));
         return response;
@@ -118,20 +117,38 @@ public class TicketService {
         return response;
     }
 
-    public Response checkout(String bearerToken, PaymentRequest paymentRequest) {
+    public Response checkout(String bearerToken, CheckoutRequest checkoutRequest) {
         Response response = new Response();
-        Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Ticket ticket = ticketRepository.findByConfirmCode(paymentRequest.getTicketConfirmCode())
-                .orElseThrow(() -> new TicketNotFound("Ticket not found ciao"));
-        canAccessResource(loggedUserId, ticket);
+        Ticket ticket = isTicketValid(checkoutRequest.getTicketConfirmCode());
+        PaymentRequest paymentRequest = ticketMapper.mapCheckoutReqToPaymentReq(checkoutRequest, ticket.getPrice());
         PaymentResponse payResp = paymentClient.makePayment(bearerToken, paymentRequest).getBody();
         ticket.setPaymentId(payResp.getPaymentId());
         ticketRepository.save(ticket);
+        callUpdateSeatsRestTemplate(bearerToken, ticket, false);
         response.setHttpCode(200);
         response.setPaymentId(payResp.getPaymentId());
         response.setSessionId(payResp.getSessionId());
         response.setSessionUrl(payResp.getSessionUrl());
         return response;
+    }
+
+    @Transactional
+    public Response deleteTicket(String bearerToken, String confirmCode) {
+        Response response = new Response();
+        Ticket ticket = isTicketValid(confirmCode);
+        ticketRepository.deleteByConfirmCode(confirmCode);
+        if(ticket.getPaymentId() != null){
+        callUpdateSeatsRestTemplate(bearerToken, ticket, true);
+        }
+        response.setHttpCode(200);
+        return response;
+    }
+
+    private Ticket isTicketValid(String confCode) {
+        Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Ticket ticket = ticketRepository.findByConfirmCode(confCode).orElseThrow(() -> new TicketNotFound("Ticket not found"));
+        canAccessResource(loggedUserId, ticket);
+        return ticket;
     }
 
     private void canAccessMultipleResources(Long loggedUserId, List<Ticket> tickets) {
@@ -149,5 +166,32 @@ public class TicketService {
                 !loggedUserId.equals(ticket.getUserId())) {
             throw new CantAccessResource("Access to resource denied");
         }
+    }
+
+    private void callUpdateSeatsRestTemplate(String bearerToken, Ticket ticket, boolean addOrSub) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", bearerToken);
+
+        UpdateSeatsReq seatsReq = new UpdateSeatsReq();
+
+        seatsReq.setFlightId(ticket.getFlightId());
+        if (addOrSub) {
+            seatsReq.setNumBookedSeats(ticket.getInfoPassengerList().size());
+        } else {
+            seatsReq.setNumBookedSeats(-ticket.getInfoPassengerList().size());
+        }
+        seatsReq.setSeatClass(ticket.getSeatClass());
+
+        HttpEntity<UpdateSeatsReq> requestEntity = new HttpEntity<>(seatsReq, headers);
+        ParameterizedTypeReference<Response> responseType = new ParameterizedTypeReference<>() {
+        };
+
+        restTemplate.exchange(flightUrl + "/updateBookedSeat", PUT, requestEntity, responseType);
     }
 }
