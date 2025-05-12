@@ -31,14 +31,14 @@ public class PaymentService {
         /*Create productData*/
         SessionCreateParams.LineItem.PriceData.ProductData productData =
                 SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                        .setName(paymentRequest.getTicketConfirmCode())
+                        .setName(paymentRequest.ticketConfirmCode())
                         .build();
 
         /*Create priceData with productData*/
         SessionCreateParams.LineItem.PriceData priceData =
                 SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency(paymentRequest.getCurrency() != null ? paymentRequest.getCurrency() : "EUR")
-                        .setUnitAmount(((paymentRequest.getPrice().multiply(new BigDecimal(100)).longValue())))
+                        .setCurrency(paymentRequest.currency() != null ? paymentRequest.currency() : "EUR")
+                        .setUnitAmount(((paymentRequest.price().multiply(new BigDecimal(100)).longValue())))
                         .setProductData(productData)
                         .build();
 
@@ -66,9 +66,9 @@ public class PaymentService {
             throw new SessionError("Session couldn't be created");
         }
         Payment payment = new Payment();
-        payment.setTicketConfirmCode(paymentRequest.getTicketConfirmCode());
-        payment.setCurrency(paymentRequest.getCurrency());
-        payment.setPrice(paymentRequest.getPrice());
+        payment.setTicketConfirmCode(paymentRequest.ticketConfirmCode());
+        payment.setCurrency(paymentRequest.currency());
+        payment.setPrice(paymentRequest.price());
         paymentRepository.save(payment);
 
         response.setHttpCode(200);

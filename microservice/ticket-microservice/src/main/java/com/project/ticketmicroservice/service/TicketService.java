@@ -59,22 +59,22 @@ public class TicketService {
         };
         ResponseEntity<FlightBookResponse> flightResp = restTemplate.exchange(flightUrl + "/book", POST, requestEntity, responseType);
 
-        UserDTO userDTO = userClient.getUserById(bearerToken, ticketCreateRequest.getUserId()).getBody().getUserDTO();
+        UserDTO userDTO = userClient.getUserById(bearerToken, ticketCreateRequest.userId()).getBody().userDTO();
 
         ticket.setConfirmCode(UUID.randomUUID().toString());
-        ticket.setUserId(userDTO.getId());
-        ticket.setFlightId(ticketCreateRequest.getFlightId());
-        ticket.setPrice(flightResp.getBody().getTicketPrice());
-        ticket.setSeatClass(ticketCreateRequest.getSeatClass());
+        ticket.setUserId(userDTO.id());
+        ticket.setFlightId(ticketCreateRequest.flightId());
+        ticket.setPrice(flightResp.getBody().ticketPrice());
+        ticket.setSeatClass(ticketCreateRequest.seatClass());
         ticketRepository.save(ticket);
 
-        ticketCreateRequest.getInfoPassengerDTOList().forEach(infoPassDTO -> {
+        ticketCreateRequest.infoPassengerDTOList().forEach(infoPassDTO -> {
             InfoPassenger info = new InfoPassenger();
-            info.setFirstName(infoPassDTO.getFirstName());
-            info.setLastName(infoPassDTO.getLastName());
-            info.setBirthday(infoPassDTO.getBirthday());
-            info.setPassportId(infoPassDTO.getPassportId());
-            info.setPassExpireDate(infoPassDTO.getPassExpireDate());
+            info.setFirstName(infoPassDTO.firstName());
+            info.setLastName(infoPassDTO.lastName());
+            info.setBirthday(infoPassDTO.birthday());
+            info.setPassportId(infoPassDTO.passportId());
+            info.setPassExpireDate(infoPassDTO.passExpireDate());
             info.setTicket(ticket);
             infoPassengerRepository.save(info);
         });
@@ -119,7 +119,7 @@ public class TicketService {
 
     public Response checkout(String bearerToken, CheckoutRequest checkoutRequest) {
         Response response = new Response();
-        Ticket ticket = isTicketValid(checkoutRequest.getTicketConfirmCode());
+        Ticket ticket = isTicketValid(checkoutRequest.ticketConfirmCode());
         PaymentRequest paymentRequest = ticketMapper.mapCheckoutReqToPaymentReq(checkoutRequest, ticket.getPrice());
         PaymentResponse payResp = paymentClient.makePayment(bearerToken, paymentRequest).getBody();
         ticket.setPaymentId(payResp.getPaymentId());

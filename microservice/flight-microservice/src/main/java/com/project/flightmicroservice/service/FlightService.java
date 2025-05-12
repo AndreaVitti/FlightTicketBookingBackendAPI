@@ -34,19 +34,19 @@ public class FlightService {
 
 
     public Response createFlight(CreateFlightRequest createFlightRequest) {
-        if (createFlightRequest.getDepartureTime().isAfter(createFlightRequest.getArrivalTime())) {
+        if (createFlightRequest.departureTime().isAfter(createFlightRequest.arrivalTime())) {
             throw new ArrivalTimeInvalid("Arrival time is before departure time");
         }
         Response response = new Response();
         Flight flight = new Flight();
-        flight.setStartLoc(createFlightRequest.getStartLoc());
-        flight.setDestination(createFlightRequest.getDestination());
-        flight.setDepartureTime(createFlightRequest.getDepartureTime());
-        flight.setArrivalTime(createFlightRequest.getArrivalTime());
-        flight.setEconomySeats(createFlightRequest.getEconomySeats());
-        flight.setBusinessSeats(createFlightRequest.getBusinessSeats());
-        flight.setFirstClassSeats(createFlightRequest.getFirstClassSeats());
-        flight.setPrice(createFlightRequest.getPrice());
+        flight.setStartLoc(createFlightRequest.startLoc());
+        flight.setDestination(createFlightRequest.destination());
+        flight.setDepartureTime(createFlightRequest.departureTime());
+        flight.setArrivalTime(createFlightRequest.arrivalTime());
+        flight.setEconomySeats(createFlightRequest.economySeats());
+        flight.setBusinessSeats(createFlightRequest.businessSeats());
+        flight.setFirstClassSeats(createFlightRequest.firstClassSeats());
+        flight.setPrice(createFlightRequest.price());
         flightRepository.save(flight);
         response.setHttpCode(200);
         response.setFlightDTO(flightMapper.mapFlightToFlightDTO(flight));
@@ -54,14 +54,13 @@ public class FlightService {
     }
 
     public BookingResponse bookTicket(BookingRequest bookingRequest) {
-        Flight flight = flightRepository.findIfSeatsEmpty(bookingRequest.getId(),
-                        bookingRequest.getSeatClass().name(),
-                        bookingRequest.getNumPeople())
+        Flight flight = flightRepository.findIfSeatsEmpty(
+                        bookingRequest.id(),
+                        bookingRequest.seatClass().name(),
+                        bookingRequest.numPeople())
                 .orElseThrow(() -> new FlightNotFound("Flight not found"));
-        BigDecimal price = getPrice(bookingRequest.getNumPeople(), bookingRequest.getSeatClass(), flight);
-        BookingResponse bookingResponse = flightMapper.mapFlightToBookingResponse(flight, price);
-        bookingResponse.setHttpCode(200);
-        return bookingResponse;
+        BigDecimal price = getPrice(bookingRequest.numPeople(), bookingRequest.seatClass(), flight);
+        return flightMapper.mapFlightToBookingResponse(flight, price);
     }
 
     public Response getAvailableFlights(String startLoc, String destination, LocalDate departureDate, int numPeople, SeatClass seatClass) {
@@ -110,7 +109,14 @@ public class FlightService {
     }
 
 
-    public Response updateFlight(Long id, String startLoc, String destination, LocalDateTime departureTime, LocalDateTime arrivalTime, int economySeats, int businessSeats, int firstClassSeats, BigDecimal price) {
+    public Response updateFlight(Long id, String startLoc,
+                                 String destination,
+                                 LocalDateTime departureTime,
+                                 LocalDateTime arrivalTime,
+                                 Integer economySeats,
+                                 Integer businessSeats,
+                                 Integer firstClassSeats,
+                                 BigDecimal price) {
         Response response = new Response();
         Flight flight = flightRepository.findById(id).orElseThrow(() -> new FlightNotFound("Flight not found"));
         if (startLoc != null && !startLoc.equals(flight.getStartLoc())) {
@@ -125,16 +131,16 @@ public class FlightService {
         if (arrivalTime != null && !arrivalTime.equals(flight.getArrivalTime()) && arrivalTime.isAfter(departureTime)) {
             flight.setArrivalTime(arrivalTime);
         }
-        if (economySeats > 1 && economySeats != flight.getEconomySeats()) {
+        if (economySeats != null && economySeats > 1 && !economySeats.equals(flight.getEconomySeats())) {
             flight.setEconomySeats(economySeats);
         }
-        if (businessSeats > 1 && businessSeats != flight.getBusinessSeats()) {
+        if (businessSeats != null && businessSeats > 1 && !businessSeats.equals(flight.getBusinessSeats())) {
             flight.setBusinessSeats(businessSeats);
         }
-        if (firstClassSeats > 1 && firstClassSeats != flight.getFirstClassSeats()) {
+        if (firstClassSeats != null && firstClassSeats > 1 && !firstClassSeats.equals(flight.getFirstClassSeats())) {
             flight.setFirstClassSeats(firstClassSeats);
         }
-        if (price.compareTo(new BigDecimal("0.50")) >= 0 && !price.equals(flight.getPrice())) {
+        if (price != null && price.compareTo(new BigDecimal("0.50")) >= 0 && !price.equals(flight.getPrice())) {
             flight.setPrice(price);
         }
         flightRepository.save(flight);
@@ -146,26 +152,26 @@ public class FlightService {
     public Response updateBookedSeat(UpdateBookedSeatsReq updateReq) {
         Response response = new Response();
         Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Flight flight = flightRepository.findById(updateReq.getFlightId()).orElseThrow(() -> new FlightNotFound("Flight not found"));
+        Flight flight = flightRepository.findById(updateReq.flightId()).orElseThrow(() -> new FlightNotFound("Flight not found"));
         canAccessResource(loggedUserId, flight);
-        switch (updateReq.getSeatClass()) {
+        switch (updateReq.seatClass()) {
             case ECONOMY:
-                if (flight.getEconomySeats() + updateReq.getNumBookedSeats() >= 0) {
-                    flight.setEconomySeats(flight.getEconomySeats() + updateReq.getNumBookedSeats());
+                if (flight.getEconomySeats() + updateReq.numBookedSeats() >= 0) {
+                    flight.setEconomySeats(flight.getEconomySeats() + updateReq.numBookedSeats());
                 } else {
                     throw new NotEnoughSeats("No seats available");
                 }
                 break;
             case BUSINESS:
-                if (flight.getBusinessSeats() + updateReq.getNumBookedSeats() >= 0) {
-                    flight.setBusinessSeats(flight.getBusinessSeats() + updateReq.getNumBookedSeats());
+                if (flight.getBusinessSeats() + updateReq.numBookedSeats() >= 0) {
+                    flight.setBusinessSeats(flight.getBusinessSeats() + updateReq.numBookedSeats());
                 } else {
                     throw new NotEnoughSeats("No seats available");
                 }
                 break;
             case FIRST_CLASS:
-                if (flight.getFirstClassSeats() + updateReq.getNumBookedSeats() >= 0) {
-                    flight.setFirstClassSeats(flight.getFirstClassSeats() + updateReq.getNumBookedSeats());
+                if (flight.getFirstClassSeats() + updateReq.numBookedSeats() >= 0) {
+                    flight.setFirstClassSeats(flight.getFirstClassSeats() + updateReq.numBookedSeats());
                 } else {
                     throw new NotEnoughSeats("No seats available");
                 }

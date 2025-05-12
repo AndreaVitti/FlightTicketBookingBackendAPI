@@ -5,18 +5,15 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class TicketCreateRequest {
-    @NotNull(message = "User id required")
-    private Long userId;
-    @Size(min = 1, message = "At least 1 passenger")
-    List<InfoPassengerDTO> infoPassengerDTOList;
-    @NotNull(message = "Flight id required")
-    private Long flightId;
-    @Enumerated(EnumType.STRING)
-    private SeatClass seatClass;
+public record TicketCreateRequest (@NotNull(message = "User id required")
+                                   Long userId,
+                                   @Size(min = 1, message = "At least 1 passenger")
+                                   List<InfoPassengerDTO> infoPassengerDTOList,
+                                   @NotNull(message = "Flight id required")
+                                   Long flightId,
+                                   @Enumerated(EnumType.STRING)
+                                   SeatClass seatClass) {
 }

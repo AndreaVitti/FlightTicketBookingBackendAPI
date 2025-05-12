@@ -23,14 +23,14 @@ public class AuthenticationService {
 
     public Response register(RegisterRequest regRequest) {
         User user = new User();
-        user.setFirstname(regRequest.getFirstname());
-        user.setLastname(regRequest.getLastname());
-        user.setEmail(regRequest.getEmail());
+        user.setFirstname(regRequest.firstname());
+        user.setLastname(regRequest.lastname());
+        user.setEmail(regRequest.email());
 
         /*Encode the password*/
-        user.setPassword(passwordEncoder.encode(regRequest.getPassword()));
-        user.setPhone(regRequest.getPhone());
-        user.setRoles(regRequest.getRoles());
+        user.setPassword(passwordEncoder.encode(regRequest.password()));
+        user.setPhone(regRequest.phone());
+        user.setRoles(regRequest.roles());
         userRepository.save(user);
 
         Response response = new Response();
@@ -41,10 +41,10 @@ public class AuthenticationService {
 
     public Response login(AuthRequest authRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authRequest.getEmail(),
-                authRequest.getPassword())
+                authRequest.email(),
+                authRequest.password())
         );
-        User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(authRequest.email()).orElseThrow();
 
         /*Generate both refresh and access tokens*/
         String jwt = jwtService.generateToken(user, user.getId());

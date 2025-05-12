@@ -13,17 +13,16 @@ import java.util.List;
 public class FlightMapper {
 
     public FlightDTO mapFlightToFlightDTO(Flight flight) {
-        FlightDTO flightDTO = new FlightDTO();
-        flightDTO.setId(flight.getId());
-        flightDTO.setStartLoc(flight.getStartLoc());
-        flightDTO.setDestination(flight.getDestination());
-        flightDTO.setDepartureTime(flight.getDepartureTime());
-        flightDTO.setArrivalTime(flight.getArrivalTime());
-        flightDTO.setEconomySeats(flight.getEconomySeats());
-        flightDTO.setBusinessSeats(flight.getBusinessSeats());
-        flightDTO.setFirstClassSeats(flight.getFirstClassSeats());
-        flightDTO.setPrice(flight.getPrice());
-        return flightDTO;
+        return new FlightDTO(
+                flight.getId(),
+                flight.getStartLoc(),
+                flight.getDestination(),
+                flight.getDepartureTime(),
+                flight.getArrivalTime(),
+                flight.getEconomySeats(),
+                flight.getBusinessSeats(),
+                flight.getFirstClassSeats(),
+                flight.getPrice());
     }
 
     public AvailFlightResponse mapFlightToAvailFlightResponse(Flight flight) {
@@ -37,13 +36,14 @@ public class FlightMapper {
     }
 
     public BookingResponse mapFlightToBookingResponse(Flight flight, BigDecimal ticketPrice) {
-        BookingResponse bookingResponse = new BookingResponse();
-        bookingResponse.setId(flight.getId());
-        bookingResponse.setStartLoc(flight.getStartLoc());
-        bookingResponse.setDestination(flight.getDestination());
-        bookingResponse.setDepartureTime(flight.getDepartureTime());
-        bookingResponse.setArrivalTime(flight.getArrivalTime());
-        bookingResponse.setTicketPrice(ticketPrice);
+        BookingResponse bookingResponse = new BookingResponse(
+                200,
+                flight.getId(),
+                flight.getStartLoc(),
+                flight.getDestination(),
+                flight.getDepartureTime(),
+                flight.getArrivalTime(),
+                ticketPrice);
         return bookingResponse;
     }
 

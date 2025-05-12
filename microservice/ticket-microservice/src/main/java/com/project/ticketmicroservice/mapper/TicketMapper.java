@@ -11,42 +11,36 @@ import java.util.List;
 @Service
 public class TicketMapper {
     public FlightBookRequest mapTicketCreateToFlightBook(TicketCreateRequest createReq) {
-        FlightBookRequest flightReq = new FlightBookRequest();
-        flightReq.setId(createReq.getFlightId());
-        flightReq.setNumPeople(createReq.getInfoPassengerDTOList().size());
-        flightReq.setSeatClass(createReq.getSeatClass());
-        return flightReq;
+        return new FlightBookRequest(
+                createReq.flightId(),
+                createReq.infoPassengerDTOList().size(),
+                createReq.seatClass());
     }
 
-    public PaymentRequest mapCheckoutReqToPaymentReq(CheckoutRequest checkoutReq, BigDecimal price){
-        PaymentRequest payReq = new PaymentRequest();
-        payReq.setTicketConfirmCode(checkoutReq.getTicketConfirmCode());
-        payReq.setCurrency(checkoutReq.getCurrency());
-        payReq.setPrice(price);
+    public PaymentRequest mapCheckoutReqToPaymentReq(CheckoutRequest checkoutReq, BigDecimal price) {
+        PaymentRequest payReq = new PaymentRequest(checkoutReq.ticketConfirmCode(), checkoutReq.currency(), price);
         return payReq;
     }
 
     public TicketFullInfo mapTicketToTicketFullInfo(Ticket ticket) {
-        TicketFullInfo ticketFullInfo = new TicketFullInfo();
-        ticketFullInfo.setId(ticket.getId());
-        ticketFullInfo.setConfirmCode(ticket.getConfirmCode());
-        ticketFullInfo.setUserId(ticket.getUserId());
-        ticketFullInfo.setFlightId(ticket.getFlightId());
-        ticketFullInfo.setPaymentId(ticket.getPaymentId());
-        ticketFullInfo.setPrice(ticket.getPrice());
-        ticketFullInfo.setSeatClass(ticket.getSeatClass());
-        ticketFullInfo.setInfoPassengerDTOList(mapInfoPassListToInfoPassDTOList(ticket.getInfoPassengerList()));
-        return ticketFullInfo;
+        return new TicketFullInfo(
+                ticket.getId(),
+                ticket.getConfirmCode(),
+                ticket.getUserId(),
+                ticket.getFlightId(),
+                ticket.getPaymentId(),
+                ticket.getPrice(),
+                ticket.getSeatClass(),
+                mapInfoPassListToInfoPassDTOList(ticket.getInfoPassengerList()));
     }
 
     public InfoPassengerDTO mapInfoPassToInfoPassDTO(InfoPassenger info) {
-        InfoPassengerDTO infoDTO = new InfoPassengerDTO();
-        infoDTO.setFirstName(info.getFirstName());
-        infoDTO.setLastName(info.getLastName());
-        infoDTO.setBirthday(info.getBirthday());
-        infoDTO.setPassportId(info.getPassportId());
-        infoDTO.setPassExpireDate(info.getPassExpireDate());
-        return infoDTO;
+        return new InfoPassengerDTO(
+                info.getFirstName(),
+                info.getLastName(),
+                info.getBirthday(),
+                info.getPassportId(),
+                info.getPassExpireDate());
     }
 
     public List<InfoPassengerDTO> mapInfoPassListToInfoPassDTOList(List<InfoPassenger> infos) {

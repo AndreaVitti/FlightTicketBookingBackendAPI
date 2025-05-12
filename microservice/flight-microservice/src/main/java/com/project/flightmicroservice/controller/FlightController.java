@@ -1,5 +1,6 @@
 package com.project.flightmicroservice.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.flightmicroservice.DTO.*;
 import com.project.flightmicroservice.service.FlightService;
 import com.project.flightmicroservice.type.SeatClass;
@@ -31,10 +32,10 @@ public class FlightController {
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<BookingResponse> bookTicket(@RequestBody @Valid BookingRequest bookingRequest) {
         BookingResponse bookingResponse = flightService.bookTicket(bookingRequest);
-        return ResponseEntity.status(bookingResponse.getHttpCode()).body(bookingResponse);
+        return ResponseEntity.status(bookingResponse.httpCode()).body(bookingResponse);
     }
 
-    @GetMapping("/getAvailableFlights")
+    @GetMapping("/availableFlights")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<Response> getAvailableFlights(@RequestParam String startLoc,
                                                         @RequestParam String destination,
@@ -59,9 +60,9 @@ public class FlightController {
                                                  @RequestParam(required = false) String destination,
                                                  @RequestParam(required = false) LocalDateTime departureTime,
                                                  @RequestParam(required = false) LocalDateTime arrivalTime,
-                                                 @RequestParam(required = false) int economySeats,
-                                                 @RequestParam(required = false) int businessSeats,
-                                                 @RequestParam(required = false) int firstClassSeats,
+                                                 @RequestParam(required = false) Integer economySeats,
+                                                 @RequestParam(required = false) Integer businessSeats,
+                                                 @RequestParam(required = false) Integer firstClassSeats,
                                                  @RequestParam(required = false) BigDecimal price) {
         Response response = flightService.updateFlight(id, startLoc, destination, departureTime, arrivalTime, economySeats, businessSeats, firstClassSeats, price);
         return ResponseEntity.status(response.getHttpCode()).body(response);

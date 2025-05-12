@@ -10,14 +10,7 @@ import java.util.List;
 public class MapperUtils {
 
     public UserDTO mapUserToUserDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setFirstname(user.getFirstname());
-        userDTO.setLastname(user.getLastname());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPhone(user.getPhone());
-        userDTO.setRoles(user.getRoles());
-        return userDTO;
+        return new UserDTO(user.getId(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getPhone(), user.getRoles());
     }
 
     public List<UserDTO> mapUserListToUserDTOList(List<User> users) {
