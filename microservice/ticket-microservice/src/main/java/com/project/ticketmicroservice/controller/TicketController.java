@@ -24,7 +24,7 @@ public class TicketController {
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
-    @GetMapping("/getByConfirmCode/{ConfCode}")
+    @GetMapping("/{ConfCode}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<Response> getByConfCode(@PathVariable("ConfCode") String confCode) {
         Response response = ticketService.getByConfCode(confCode);
@@ -38,7 +38,7 @@ public class TicketController {
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
-    @GetMapping("/allByUserId/{userId}")
+    @GetMapping("/ticketHistory/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<Response> getAllByUserId(@PathVariable("userId") Long userId) {
         Response response = ticketService.getAllByUserId(userId);

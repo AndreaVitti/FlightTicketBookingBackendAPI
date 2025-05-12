@@ -15,6 +15,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 )
 public interface UserClient {
 
-    @GetMapping("/getUserById/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<UserResponse> getUserById(@RequestHeader("Authorization") String jwToken, @PathVariable("id") Long id);
 }

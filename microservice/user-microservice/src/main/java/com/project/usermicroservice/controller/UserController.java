@@ -14,28 +14,28 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/getAllUsers")
+    @GetMapping("/all")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Response> getAllUsers() {
         Response response = userService.getAllUsers();
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
-    @GetMapping("/getUserById/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Response> getUserById(@PathVariable("id") Long id) {
         Response response = userService.getUserById(id);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
-    @DeleteMapping("/deleteUserById/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Response> deleteUserById(@PathVariable("id") Long id) {
         Response response = userService.deleteUserById(id);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
-    @GetMapping("/getLoggedUser")
+    @GetMapping("/loggedUser")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<Response> getLoggedUser() {
         Response response = userService.getLoggedUser();
