@@ -24,10 +24,12 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
     public void handleError(@NonNull URI url, @NonNull HttpMethod method, @NonNull ClientHttpResponse httpResponse) throws IOException {
         if (httpResponse.getStatusCode().is5xxServerError()) {
             throw new ServerErr("Server error " + httpResponse.getStatusCode());
+        } else if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+            throw new FlightNotAvail("Flight not available");
+        } else if (httpResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            throw new FlightNotAvail("Flight not available");
         } else if (httpResponse.getStatusCode().is4xxClientError()) {
-            if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new FlightNotAvail("Flight not available");
-            }
+            throw new RuntimeException("Generic exception");
         }
     }
 }

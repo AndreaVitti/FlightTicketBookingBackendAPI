@@ -9,17 +9,13 @@ public class GatewayExceHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(HeaderNotValid.class)
     public ResponseEntity<Response> headerHandler(HeaderNotValid e) {
-        Response response = new Response();
-        response.setHttpCode(403);
-        response.setMessage(e.getMessage());
-        return ResponseEntity.status(response.getHttpCode()).body(response);
+        Response response = new Response(403, e.getMessage());
+        return ResponseEntity.status(response.httpCode()).body(response);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(NotAuthorize.class)
     public ResponseEntity<Response> authHandler(NotAuthorize e) {
-        Response response = new Response();
-        response.setHttpCode(403);
-        response.setMessage(e.getMessage());
-        return ResponseEntity.status(response.getHttpCode()).body(response);
+        Response response = new Response(403, e.getMessage());
+        return ResponseEntity.status(response.httpCode()).body(response);
     }
 }

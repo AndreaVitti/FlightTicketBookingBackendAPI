@@ -15,7 +15,7 @@ public class FeignUserErrDecoder implements ErrorDecoder {
         } else if (status.is4xxClientError()) {
             return new UserNotFound("User not found");
         } else {
-            return new Exception("Generic exception");
+            return new RuntimeException("Generic exception");
         }
     }
 }

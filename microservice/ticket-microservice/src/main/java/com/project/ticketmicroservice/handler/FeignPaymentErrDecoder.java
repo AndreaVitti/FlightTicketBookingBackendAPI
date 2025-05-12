@@ -12,7 +12,7 @@ public class FeignPaymentErrDecoder implements ErrorDecoder {
         if (status.is5xxServerError()) {
             return new ServerErr("Session error " + status);
         } else {
-            return new Exception("Generic exception");
+            return new RuntimeException("Generic exception");
         }
     }
 }
