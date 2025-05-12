@@ -14,6 +14,13 @@ services:
       - microservicesNetwork
     restart: unless-stopped
 
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9422:9411"
+    networks:
+      - microservicesNetwork
 networks:
   microservicesNetwork:
     driver: bridge

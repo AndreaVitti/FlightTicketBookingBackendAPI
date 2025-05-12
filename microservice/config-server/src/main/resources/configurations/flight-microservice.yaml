@@ -19,6 +19,14 @@ spring:
       ddl-auto: create-drop
     database: postgresql
 
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9422/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+
 #set your own 256-bit secret key
 api:
   secretkey:
