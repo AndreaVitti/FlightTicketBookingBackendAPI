@@ -31,6 +31,10 @@ public class PreAuthentificateFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwToken;
 
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         jwToken = authHeader.substring(7);
         Claims extractAllClaims = Jwts
                 .parser()

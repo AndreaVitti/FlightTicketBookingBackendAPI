@@ -1,4 +1,4 @@
-package com.project.gatewayApi.handler;
+package com.project.gatewayApi.exception;
 
 public class HeaderNotValid extends RuntimeException {
     public HeaderNotValid(String message) {

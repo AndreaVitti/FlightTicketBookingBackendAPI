@@ -55,4 +55,9 @@ public class AuthenticationService {
         response.setUserId(user.getId());
         return response;
     }
+
+    public Boolean verifyUser(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        return user != null;
+    }
 }

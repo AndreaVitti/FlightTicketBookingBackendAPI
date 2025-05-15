@@ -7,10 +7,7 @@ import com.project.usermicroservice.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -31,5 +28,11 @@ public class AuthenticationController {
     public ResponseEntity<Response> login(@RequestBody @Valid AuthRequest authRequest) {
         Response response = authenticationService.login(authRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
+    }
+
+    @GetMapping("/verifyUser/{email}")
+    public ResponseEntity<Boolean> verifyUser(@PathVariable("email") String email) {
+        Boolean exist = authenticationService.verifyUser(email);
+        return ResponseEntity.ok().body(exist);
     }
 }

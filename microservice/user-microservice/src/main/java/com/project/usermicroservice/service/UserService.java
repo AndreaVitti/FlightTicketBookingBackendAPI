@@ -2,7 +2,7 @@ package com.project.usermicroservice.service;
 
 import com.project.usermicroservice.DTO.Response;
 import com.project.usermicroservice.entity.User;
-import com.project.usermicroservice.handler.UserNotFound;
+import com.project.usermicroservice.exception.UserNotFound;
 import com.project.usermicroservice.mapper.MapperUtils;
 import com.project.usermicroservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

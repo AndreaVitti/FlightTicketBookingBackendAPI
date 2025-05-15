@@ -1,4 +1,4 @@
-package com.project.flightmicroservice.authConfig;
+package com.project.usermicroservice.authConfig;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -46,7 +46,8 @@ public class PreAuthentificateFilter extends OncePerRequestFilter {
         String userId = extractAllClaims.get("UserId", String.class);
 
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
-        Authentication authentication = new TestingAuthenticationToken(userId, null, grantedAuthorities);
+        Authentication authentication =
+                new TestingAuthenticationToken(userId, null, grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
