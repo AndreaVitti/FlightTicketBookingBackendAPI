@@ -1,0 +1,10 @@
+.gitignore
+.git
+.idea
+**/target/
+**/gitignore
+**/HELP.md
+**/gitattributes
+*.iws
+*.iml
+*.ipr

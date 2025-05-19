@@ -1,16 +1,123 @@
 services:
+  config_server:
+    build: microservice/config-server/
+    container_name: configserver
+    ports:
+      - "8999:8999"
+    networks:
+      - microservicesNetwork
+    healthcheck:
+      test: curl --silent --fail localhost:8999/actuator/health | grep UP || exit 1
+      interval: 3s
+      retries: 5
+      start_period: 5s
+  discovery_server:
+    build: microservice/discovery-server/
+    container_name: discoveryserver
+    ports:
+      - "8777:8777"
+    networks:
+      - microservicesNetwork
+    healthcheck:
+      test: curl --silent --fail localhost:8777/actuator/health | grep UP || exit 1
+      interval: 3s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      config_server:
+        condition: service_healthy
+  user_microservice:
+    build: microservice/user-microservice/
+    container_name: usermicroservice
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8555:8555"
+    networks:
+      - microservicesNetwork
+    depends_on:
+      config_server:
+        condition: service_healthy
+      discovery_server:
+        condition: service_healthy
+  flight_microservice:
+    build: microservice/flight-microservice/
+    container_name: flightmicroservice
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8444:8444"
+    networks:
+      - microservicesNetwork
+    depends_on:
+      config_server:
+        condition: service_healthy
+      discovery_server:
+        condition: service_healthy
+  ticket_microservice:
+    build: microservice/ticket-microservice/
+    container_name: ticketmicroservice
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8333:8333"
+    networks:
+      - microservicesNetwork
+    depends_on:
+      config_server:
+        condition: service_healthy
+      discovery_server:
+        condition: service_healthy
+  payment_microservice:
+    build: microservice/payment-microservice/
+    container_name: paymentmicroservice
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8222:8222"
+    networks:
+      - microservicesNetwork
+    depends_on:
+      config_server:
+        condition: service_healthy
+      discovery_server:
+        condition: service_healthy
+  api_gateway:
+    build: microservice/api-gateway/
+    container_name: apigateway
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8666:8666"
+    networks:
+      - microservicesNetwork
+    depends_on:
+      - user_microservice
+      - flight_microservice
+      - ticket_microservice
+      - payment_microservice
   postgresql:
-    container_name: postgres_db
+    container_name: postgresdb
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
       - ./psql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5332:5432"
+      - "5433:5432"
     networks:
       - microservicesNetwork
     restart: unless-stopped
@@ -19,11 +126,12 @@ services:
     container_name: zipkin
     image: openzipkin/zipkin
     ports:
-      - "9422:9411"
+      - "9412:9411"
     networks:
       - microservicesNetwork
 networks:
   microservicesNetwork:
+    name: microservicesNetwork
     driver: bridge
 
 volumes:
