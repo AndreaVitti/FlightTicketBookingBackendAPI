@@ -31,7 +31,8 @@ management:
 
 #Duration of the access token in milliseconds
 expire:
-  jw-token: 3600000
+  access-token: ${ACCESS_TOKEN_EXPIRE}
+  refresh-token: ${REFRESH_TOKEN_EXPIRE}
 
 #set your own 256-bit secret key
 api:

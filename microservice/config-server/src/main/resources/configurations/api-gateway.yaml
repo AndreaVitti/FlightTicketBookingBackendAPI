@@ -20,7 +20,13 @@ spring:
         - id: auth-microservice
           uri: http://usermicroservice:8555
           predicates:
-            - Path=/api/v1/auth/register, /api/v1/auth/login , /api/v1/auth/verifyUser/**
+            - Path=/api/v1/auth/register, /api/v1/auth/login , /api/v1/auth/verifyUser/** , /api/v1/auth/refresh
+        - id: auth-microservice
+          uri: http://usermicroservice:8555
+          predicates:
+            - Path=/api/v1/auth/logout
+          filters:
+            - JwtAuthFilter
         - id: user-microservice
           uri: http://usermicroservice:8555
           predicates:
