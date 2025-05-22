@@ -47,7 +47,8 @@ public class UserService {
 
     public Response getLoggedUser() {
         Response response = new Response();
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId  = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
         response.setHttpCode(200);
         response.setUserDTO(mapperUtils.mapUserToUserDTO(user));
         return response;
