@@ -1,9 +1,11 @@
 eureka:
   instance:
-    hostname: localhost
+    hostname: discoveryserver
   client:
     service-url:
-      defaultZone: http://localhost:8777/eureka
+      defaultZone: http://discoveryserver:8777/eureka
+    instance:
+      preferIpAddress: true
 
 server:
   port: 8333
@@ -11,9 +13,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5332/ticketsdb
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://postgresdb:5432/ticketsdb
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -22,15 +24,15 @@ spring:
 management:
   zipkin:
     tracing:
-      endpoint: http://localhost:9422/api/v2/spans
+      endpoint: http://zipkin:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0
 
 #set your own 256-bit secret key
 api:
-  secretkey:
+  secretkey: ${SECRET_KEY}
   urls:
-    flightUrl: http://localhost:8666/api/v1/flights
-    userUrl: http://localhost:8666/api/v1/users
-    paymentUrl: http://localhost:8666/api/v1/payments
+    flightUrl: http://apigateway:8666/api/v1/flights
+    userUrl: http://apigateway:8666/api/v1/users
+    paymentUrl: http://apigateway:8666/api/v1/payments

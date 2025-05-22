@@ -1,6 +1,5 @@
 package com.project.flightmicroservice.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.flightmicroservice.DTO.*;
 import com.project.flightmicroservice.service.FlightService;
 import com.project.flightmicroservice.type.SeatClass;
@@ -41,8 +40,10 @@ public class FlightController {
                                                         @RequestParam String destination,
                                                         @RequestParam LocalDate departureDate,
                                                         @RequestParam int numPeople,
-                                                        @RequestParam SeatClass seatClass) {
-        Response response = flightService.getAvailableFlights(startLoc, destination, departureDate, numPeople, seatClass);
+                                                        @RequestParam SeatClass seatClass,
+                                                        @RequestParam(value = "PageNum", defaultValue = "0", required = false) int pageNum,
+                                                        @RequestParam(value = "PageSize", defaultValue = "15", required = false) int pageSize) {
+        Response response = flightService.getAvailableFlights(startLoc, destination, departureDate, numPeople, seatClass, pageNum, pageSize);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 

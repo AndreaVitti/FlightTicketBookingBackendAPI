@@ -16,8 +16,9 @@ public class UserController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> getAllUsers() {
-        Response response = userService.getAllUsers();
+    public ResponseEntity<Response> getAllUsers(@RequestParam(value = "PageNum", defaultValue = "0", required = false) int pageNum,
+                                                @RequestParam(value = "PageSize", defaultValue = "15", required = false) int pageSize) {
+        Response response = userService.getAllUsers(pageNum, pageSize);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 

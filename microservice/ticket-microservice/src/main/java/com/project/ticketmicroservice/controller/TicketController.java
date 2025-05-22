@@ -33,15 +33,18 @@ public class TicketController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> getAll() {
-        Response response = ticketService.getAll();
+    public ResponseEntity<Response> getAll(@RequestParam(value = "PageNum", defaultValue = "0", required = false) int pageNum,
+                                           @RequestParam(value = "PageSize", defaultValue = "15", required = false) int pageSize) {
+        Response response = ticketService.getAll(pageNum, pageSize);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 
     @GetMapping("/ticketHistory/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Response> getAllByUserId(@PathVariable("userId") Long userId) {
-        Response response = ticketService.getAllByUserId(userId);
+    public ResponseEntity<Response> getAllByUserId(@PathVariable("userId") Long userId,
+                                                   @RequestParam(value = "PageNum", defaultValue = "0", required = false) int pageNum,
+                                                   @RequestParam(value = "PageSize", defaultValue = "15", required = false) int pageSize) {
+        Response response = ticketService.getAllByUserId(userId, pageNum, pageSize);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 

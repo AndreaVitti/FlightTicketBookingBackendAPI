@@ -12,6 +12,9 @@ import com.project.flightmicroservice.type.Role;
 import com.project.flightmicroservice.type.SeatClass;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -63,11 +66,13 @@ public class FlightService {
         return flightMapper.mapFlightToBookingResponse(flight, price);
     }
 
-    public Response getAvailableFlights(String startLoc, String destination, LocalDate departureDate, int numPeople, SeatClass seatClass) {
+    public Response getAvailableFlights(String startLoc, String destination, LocalDate departureDate, int numPeople, SeatClass seatClass, int pageNum, int pageSize) {
         Response response = new Response();
-        List<Flight> flightsSameLoc = flightRepository
-                .findAvailability(startLoc, destination, seatClass.name(), numPeople)
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Flight> flightPage = flightRepository
+                .findAvailability(startLoc, destination, seatClass.name(), numPeople, pageable)
                 .orElseThrow(() -> new FlightNotFound("Flight not found"));
+        List<Flight> flightsSameLoc = flightPage.getContent();
         List<Flight> flightAvail = flightsSameLoc
                 .stream()
                 .filter(flight -> flight.getDepartureTime().toLocalDate().isEqual(departureDate))

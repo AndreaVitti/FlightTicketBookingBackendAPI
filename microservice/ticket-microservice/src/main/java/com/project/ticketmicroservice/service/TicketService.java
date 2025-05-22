@@ -15,6 +15,9 @@ import com.project.ticketmicroservice.type.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -93,9 +96,11 @@ public class TicketService {
         return response;
     }
 
-    public Response getAll() {
+    public Response getAll(int pageNum, int pageSize) {
         Response response = new Response();
-        List<Ticket> tickets = ticketRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Ticket> ticketPage = ticketRepository.findAll(pageable);
+        List<Ticket> tickets = ticketPage.getContent();
         if (tickets.isEmpty()) {
             throw new TicketNotFound("No ticket found");
         }
@@ -104,13 +109,12 @@ public class TicketService {
         return response;
     }
 
-    public Response getAllByUserId(Long userId) {
+    public Response getAllByUserId(Long userId, int pageNum, int pageSize) {
         Response response = new Response();
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
         Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        List<Ticket> tickets = ticketRepository.findByUserId(userId);
-        if (tickets.isEmpty()) {
-            throw new TicketNotFound("No ticket found");
-        }
+        Page<Ticket> ticketPage = ticketRepository.findByUserId(userId, pageable).orElseThrow(()->new TicketNotFound("No ticket found"));
+        List<Ticket> tickets = ticketPage.getContent();
         canAccessMultipleResources(loggedUserId, tickets);
         response.setHttpCode(200);
         response.setTicketFullInfoList(ticketMapper.mapTicketListToTicketFullInfoList(tickets));
@@ -137,8 +141,8 @@ public class TicketService {
         Response response = new Response();
         Ticket ticket = isTicketValid(confirmCode);
         ticketRepository.deleteByConfirmCode(confirmCode);
-        if(ticket.getPaymentId() != null){
-        callUpdateSeatsRestTemplate(bearerToken, ticket, true);
+        if (ticket.getPaymentId() != null) {
+            callUpdateSeatsRestTemplate(bearerToken, ticket, true);
         }
         response.setHttpCode(200);
         return response;

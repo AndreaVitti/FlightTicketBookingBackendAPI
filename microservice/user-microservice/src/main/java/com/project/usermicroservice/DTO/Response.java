@@ -12,7 +12,8 @@ public class Response {
     private String message;
 
     private Long userId;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
     private UserDTO userDTO;
     private List<UserDTO> userDTOList;
