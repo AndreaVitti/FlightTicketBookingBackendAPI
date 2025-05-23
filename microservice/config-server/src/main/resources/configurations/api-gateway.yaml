@@ -16,6 +16,13 @@ spring:
       discovery:
         locator:
           enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${CROSS_ORIGIN}
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         - id: auth-microservice
           uri: http://usermicroservice:8555

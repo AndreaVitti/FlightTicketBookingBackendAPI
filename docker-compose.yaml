@@ -99,6 +99,7 @@ services:
     container_name: apigateway
     environment:
       SECRET_KEY: ${SECRET_KEY}
+      CROSS_ORIGIN: ${CROSS_ORIGIN}
     ports:
       - "8666:8666"
     networks:

@@ -2,6 +2,7 @@ package com.project.gatewayApi.filter;
 
 import com.project.gatewayApi.exception.HeaderNotValid;
 import com.project.gatewayApi.exception.NotAuthorize;
+import com.project.gatewayApi.exception.TokenNotFound;
 import com.project.gatewayApi.exception.UserToAuhtNotFound;
 import com.project.gatewayApi.util.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,12 @@ import java.util.Objects;
 @Component
 public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Config> {
 
-    private final RouteValidator routeValidator;
     private final JWTService jwtService;
     private final WebClient webClient;
 
     @Autowired
-    public JwtAuthFilter(RouteValidator routeValidator, JWTService jwtService, WebClient webClient) {
+    public JwtAuthFilter(JWTService jwtService, WebClient webClient) {
         super(Config.class);
-        this.routeValidator = routeValidator;
         this.jwtService = jwtService;
         this.webClient = webClient;
     }
@@ -31,21 +30,23 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            String username = "";
-            String authHeader = "";
-            if (routeValidator.isSecured.test(exchange.getRequest())) {
-                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new HeaderNotValid("Incorrect token header");
-                }
-                authHeader = Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).getFirst();
-                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                    throw new HeaderNotValid("Incorrect token header");
-                }
-                String jwToken = authHeader.substring(7);
+            String username;
+            String authHeader;
+            if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                throw new HeaderNotValid("Incorrect token header");
+            }
+            authHeader = Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).getFirst();
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw new HeaderNotValid("Incorrect token header");
+            }
+            String jwToken = authHeader.substring(7);
+            try {
                 username = jwtService.extractUsername(jwToken);
-                if (username == null || jwtService.isTokenExpired(jwToken)) {
-                    throw new NotAuthorize("Access not authorized");
-                }
+            } catch (RuntimeException e) {
+                throw new TokenNotFound("Provided access token is invalid");
+            }
+            if (username == null || jwtService.isTokenExpired(jwToken)) {
+                throw new NotAuthorize("Access not authorized");
             }
             return webClient.get().uri("/verifyUser/" + username)
                     .header("Authorization", authHeader)
