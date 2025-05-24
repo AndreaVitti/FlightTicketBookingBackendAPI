@@ -41,7 +41,7 @@ To run this project, you will need to add the following environment variables to
 - the password of the user managing the database
 - the access token duration (default value = 30 min)
 - the refresh token duration (default value = 24 h)
-- the cross origin url (default value = http://localhost:3000)
+- the cross origin url (default value = "http://localhost:3000")
 
 
 ## Deployment
@@ -65,4 +65,11 @@ The endpoints of the API have been tested with the help of `Postman`.
 The API has been secured by using a JWT on the API gateway from which every request has to pass through. If the JWT is valid then the API will provide the access token, which will be stored in memory and have a short duration, and a refresh token, which will be stored in a secure httponly cookie and be have a longer lifespan.  
 
 ## Usage
-To checkout the project's CRUD operations yourserlf I highly suggest to install `Postman`, but any browser will do too.
+To checkout the project's CRUD operations yourserlf I highly suggest to install `Postman`, but any browser will do too. Zipkin can be access through "http://localhost:9412/zipkin/" to have a better understanding of the performance and request flows.
+
+## Documentation
+Use OpenAPI to organize and visualize all CRUD operations:
+- "http://localhost:8555/swagger-ui/index.html" for the user microservice
+- "http://localhost:8444/swagger-ui/index.html" for the flight microservice
+- "http://localhost:8333/swagger-ui/index.html" for the ticket microservice
+- "http://localhost:8222/swagger-ui/index.html" for the payment microservice
