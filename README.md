@@ -7,6 +7,14 @@ This project's aim is to create an API capable of searching flights based on dif
 The project instead of being a monolithic RESTful API is based on different microserivices to better improve the mantainability and scalabilty of the API.\
 Docker has implemented to ease the installation process.  
 
+## Technologies used
+List of the technologies used in this project:
+- Spring Boot
+- Docker
+- PostgresSQL
+- Zipkin
+- OpenAPI
+- Stripe
 
 ## Functionalities
 This API supports the following operations:
@@ -31,6 +39,9 @@ To run this project, you will need to add the following environment variables to
 - the secret key generated upon registering a `Stripe` account
 - the username of the user managing the database
 - the password of the user managing the database
+- the access token duration (default value = 30 min)
+- the refresh token duration (default value = 24 h)
+- the cross origin url (default value = http://localhost:3000)
 
 
 ## Deployment
@@ -46,8 +57,12 @@ Navigate to the project directory and deploy the project through the terminal:
 ```
 This will result in the generation of Docker images and containers for each microservice.
 
+
 ## Testing
 The endpoints of the API have been tested with the help of `Postman`.
 
+## Security
+The API has been secured by using a JWT on the API gateway from which every request has to pass through. If the JWT is valid then the API will provide the access token, which will be stored in memory and have a short duration, and a refresh token, which will be stored in a secure httponly cookie and be have a longer lifespan.  
+
 ## Usage
-To use the project I highly suggest to install `Postman` and proceed to check the various possible CRUD operations or use simply any browser.
+To checkout the project's CRUD operations yourserlf I highly suggest to install `Postman`, but any browser will do too.
