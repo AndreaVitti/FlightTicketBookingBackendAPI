@@ -15,6 +15,7 @@ List of the technologies used in this project:
 - Zipkin
 - OpenAPI
 - Stripe
+- Intellij
 
 ## Functionalities
 This API supports the following operations:
@@ -37,6 +38,7 @@ To run this project, you will need to add the following environment variables to
 - a 256 bit secret key
 - the public key generated upon registering a `Stripe` account
 - the secret key generated upon registering a `Stripe` account
+- the secret key that encrypts the endpoint of the Stripe webhook
 - the username of the user managing the database
 - the password of the user managing the database
 - the access token duration (default value = 30 min)
@@ -55,7 +57,8 @@ Navigate to the project directory and deploy the project through the terminal:
 ```bash
   docker compose up -d
 ```
-This will result in the generation of Docker images and containers for each microservice.
+This will result in the generation of Docker images and containers for each microservice.\
+To the get the webhook endpoint key open the 'stripeCli' container in docker and copy it from the logs to the env. file (to make the changes valid the containers will need to be reloaded so rerun the docker compose).
 
 
 ## Testing
