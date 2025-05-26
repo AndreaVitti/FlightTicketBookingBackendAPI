@@ -58,7 +58,7 @@ Navigate to the project directory and deploy the project through the terminal:
   docker compose up -d
 ```
 This will result in the generation of Docker images and containers for each microservice.\
-To the get the webhook endpoint key open the 'stripeCli' container in docker and copy it from the logs to the env. file (to make the changes valid the containers will need to be reloaded so rerun the docker compose).
+To the get the webhook endpoint key open the 'stripeCli' container in docker and copy it from the logs to the env. file (to make the changes valid the containers will need to be reloaded so rerun the docker compose command).
 
 
 ## Testing
