@@ -19,14 +19,12 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    /*Search for the user based on the username*/
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    /*Provides the AuthentificationProvider based on userDetails and passwordEncoder*/
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider DaoAuthProvider = new DaoAuthenticationProvider();
@@ -35,13 +33,11 @@ public class ApplicationConfig {
         return DaoAuthProvider;
     }
 
-    /*Encode password*/
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /*Provides the authenticationManager*/
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authcConfig) throws Exception {
         return authcConfig.getAuthenticationManager();

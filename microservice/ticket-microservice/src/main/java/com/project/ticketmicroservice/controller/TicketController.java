@@ -1,5 +1,6 @@
 package com.project.ticketmicroservice.controller;
 
+import com.project.ticketmicroservice.DTO.CheckoutCompletedRequest;
 import com.project.ticketmicroservice.DTO.CheckoutRequest;
 import com.project.ticketmicroservice.DTO.Response;
 import com.project.ticketmicroservice.DTO.TicketCreateRequest;
@@ -52,6 +53,12 @@ public class TicketController {
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<Response> checkout(@RequestHeader("Authorization") String bearerToken, @RequestBody @Valid CheckoutRequest checkoutRequest) {
         Response response = ticketService.checkout(bearerToken, checkoutRequest);
+        return ResponseEntity.status(response.getHttpCode()).body(response);
+    }
+
+    @PutMapping("/checkoutCompleted")
+    public ResponseEntity<Response> checkoutCompleted(@RequestHeader("Authorization") String bearerToken, @RequestBody @Valid CheckoutCompletedRequest completedRequest) {
+        Response response = ticketService.checkoutCompleted(bearerToken, completedRequest);
         return ResponseEntity.status(response.getHttpCode()).body(response);
     }
 

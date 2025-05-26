@@ -26,7 +26,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/payments/webhook").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(preAuthentificateFilter, BasicAuthenticationFilter.class)

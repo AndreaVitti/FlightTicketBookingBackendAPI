@@ -28,6 +28,10 @@ spring:
           uri: http://usermicroservice:8555
           predicates:
             - Path=/api/v1/auth/register, /api/v1/auth/login , /api/v1/auth/verifyUser/** , /api/v1/auth/refresh
+        - id: webhook
+          uri: http://paymentmicroservice:8222
+          predicates:
+            - Path=/api/v1/payments/webhook
         - id: auth-microservice
           uri: http://usermicroservice:8555
           predicates:
@@ -55,7 +59,7 @@ spring:
         - id: payment-microservice
           uri: http://paymentmicroservice:8222
           predicates:
-            - Path=/api/v1/payments/**
+            - Path=/api/v1/payments/makePayment, /api/v1/payments/all, /api/v1/payments/getById/**
           filters:
             - JwtAuthFilter
 

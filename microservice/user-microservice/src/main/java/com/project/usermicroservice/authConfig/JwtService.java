@@ -30,13 +30,11 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /*Extract a claim from token*/
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    /*Extract all the claims from token*/
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
@@ -46,7 +44,6 @@ public class JwtService {
                 .getPayload();
     }
 
-    /*Generate an access token*/
     public String generateAccessToken(UserDetails userDetails, Long userId) {
         Map<String, String> extraClaims = new HashMap<>();
         String authString = userDetails.getAuthorities().toString();
@@ -59,7 +56,6 @@ public class JwtService {
         return generateRefreshToken(new HashMap<>(), userId, refreshTokenExpire);
     }
 
-    /*Method to generate the token*/
     public String generateAccessToken(Map<String, String> extraClaims, UserDetails userDetails, int expireDuration) {
         return Jwts
                 .builder()
@@ -82,7 +78,6 @@ public class JwtService {
                 .compact();
     }
 
-    /*Decode the secret key and get the signIn key*/
     public SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

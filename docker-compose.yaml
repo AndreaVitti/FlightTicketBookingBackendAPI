@@ -83,6 +83,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+      STRIPE_SECRET_ENDPOINT: ${STRIPE_SECRET_ENDPOINT}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
@@ -124,12 +125,17 @@ services:
     networks:
       - microservicesNetwork
     restart: unless-stopped
-
   zipkin:
     container_name: zipkin
     image: openzipkin/zipkin
     ports:
       - "9412:9411"
+    networks:
+      - microservicesNetwork
+  stripe_cli:
+    container_name: stripeCli
+    image: stripe/stripe-cli:latest
+    command: listen --api-key ${STRIPE_SECRET_KEY} --forward-to apigateway:8666/api/v1/payments/webhook
     networks:
       - microservicesNetwork
 networks:

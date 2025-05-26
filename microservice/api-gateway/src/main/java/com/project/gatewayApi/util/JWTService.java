@@ -21,13 +21,11 @@ public class JWTService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /*Extract a claim from token*/
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    /*Extract all the claims from token*/
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
@@ -37,17 +35,14 @@ public class JWTService {
                 .getPayload();
     }
 
-    /*Check if the token has expired*/
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    /*Exctract the expiration date*/
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    /*Decode the secret key and get the signIn key*/
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

@@ -35,3 +35,6 @@ api:
   stripe:
     secretKey: ${STRIPE_SECRET_KEY}
     publicKey: ${STRIPE_PUBLIC_KEY}
+    secretEndpoint: ${STRIPE_SECRET_ENDPOINT}
+  urls:
+    ticketUrl: http://apigateway:8666/api/v1/tickets

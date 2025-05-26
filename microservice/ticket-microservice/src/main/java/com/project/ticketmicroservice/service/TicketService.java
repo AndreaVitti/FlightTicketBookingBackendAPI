@@ -113,7 +113,7 @@ public class TicketService {
         Response response = new Response();
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Long loggedUserId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Page<Ticket> ticketPage = ticketRepository.findByUserId(userId, pageable).orElseThrow(()->new TicketNotFound("No ticket found"));
+        Page<Ticket> ticketPage = ticketRepository.findByUserId(userId, pageable).orElseThrow(() -> new TicketNotFound("No ticket found"));
         List<Ticket> tickets = ticketPage.getContent();
         canAccessMultipleResources(loggedUserId, tickets);
         response.setHttpCode(200);
@@ -126,13 +126,20 @@ public class TicketService {
         Ticket ticket = isTicketValid(checkoutRequest.ticketConfirmCode());
         PaymentRequest paymentRequest = ticketMapper.mapCheckoutReqToPaymentReq(checkoutRequest, ticket.getPrice());
         PaymentResponse payResp = paymentClient.makePayment(bearerToken, paymentRequest).getBody();
-        ticket.setPaymentId(payResp.getPaymentId());
-        ticketRepository.save(ticket);
-        callUpdateSeatsRestTemplate(bearerToken, ticket, false);
         response.setHttpCode(200);
         response.setPaymentId(payResp.getPaymentId());
         response.setSessionId(payResp.getSessionId());
         response.setSessionUrl(payResp.getSessionUrl());
+        return response;
+    }
+
+    public Response checkoutCompleted(String bearerToken, CheckoutCompletedRequest completedRequest) {
+        Response response = new Response();
+        Ticket ticket = isTicketValid(completedRequest.ticketConfirmationCode());
+        ticket.setPaymentId(completedRequest.paymentId());
+        ticketRepository.save(ticket);
+        callUpdateSeatsRestTemplate(bearerToken, ticket, false);
+        response.setHttpCode(200);
         return response;
     }
 
